@@ -24,7 +24,7 @@
 (defn make-auth-request [facebook-app-info]
   (oauth2/make-auth-request (merge facebook-oauth2-endpoint facebook-app-info)))
 
-(defonce ^:dynamic *facebook-auth* nil)
+(defonce *facebook-auth* nil)
 
 (defmacro with-facebook-auth
   "Binds the *facebook-auth* variable to the current thread scope. The *facebook-auth* variable is
