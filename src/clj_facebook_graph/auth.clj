@@ -1,8 +1,10 @@
 (ns clj-facebook-graph.auth
   (:use [clj-facebook-graph.helper :only [facebook-base-url facebook-fql-base-url]] 
-        [clojure.data.json :only [read-json]])
+        ;; [clojure.data.json :only [read-json]]
+        )
   (:require [clj-oauth2.client :as oauth2]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [cheshire.core :as json])
   (:import [org.apache.commons.codec.binary Base64]
            [javax.crypto Mac]
            [javax.crypto.spec SecretKeySpec]))
@@ -83,7 +85,10 @@
     (let [[signiture payload] (str/split signed-request #"\.")
           signiture (str (strtr signiture "-_" "+/") "=")]
       (when (= signiture (hmac-sha-256 key payload))
-        (read-json (base64-decode payload))))))
+        (json/parse-string (base64-decode payload)
+                           true)))))        
+
+;;        (read-json (base64-decode payload))))))
 
 (defn extract-facebook-auth [session]
   (:facebook-auth (val session)))

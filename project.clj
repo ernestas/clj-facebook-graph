@@ -6,7 +6,8 @@
             :distribution :repo
             :comments "same as Clojure"}
   :dependencies [[org.clojure/clojure "1.4.0"]
-                 [org.clojure/data.json "0.1.3"]
+                 [cheshire "4.0.3"]
+                 ;; [org.clojure/data.json "0.1.3"]
                  [ring/ring-core "1.1.6"]
                  [clj-http "0.5.8"]
                  [clj-oauth2 "0.1.0"]]

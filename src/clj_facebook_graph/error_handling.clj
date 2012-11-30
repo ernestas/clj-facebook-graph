@@ -7,7 +7,8 @@
 ; You must not remove this notice, or any other, from this software.
 
 (ns clj-facebook-graph.error-handling
-  (:use [clojure.data.json])
+  ;; (:require  [cheshire.core :as json])
+  ;;  (:use [clojure.data.json])
   (:import clj_facebook_graph.FacebookGraphException))
 
 (def
@@ -47,6 +48,6 @@
       (if (or (not (clojure.core/get req :throw-exceptions true))
               (not= status 400))
         resp
-        (throw (let [resp (assoc resp :body (read-json (:body resp)))]
-                 (FacebookGraphException. (identify-facebook-error resp))))))))
+        (throw
+         (FacebookGraphException. (identify-facebook-error resp)))))))
 

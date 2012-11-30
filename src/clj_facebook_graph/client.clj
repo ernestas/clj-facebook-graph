@@ -11,9 +11,11 @@
   (:use [clj-facebook-graph.helper :only [wrap-exceptions facebook-base-url facebook-fql-base-url]]
         [clj-facebook-graph.auth :only [wrap-facebook-access-token]]
         [clj-facebook-graph.error-handling :only [wrap-facebook-exceptions]]
-        [clojure.data.json :only [read-json]] 
+        ;; [clojure.data.json :only [read-json]]
         [clj-oauth2.client :only [wrap-oauth2]])
-  (:require [clj-http.client :as client]))
+  (:require [clj-http.client :as client]
+            ;; [cheshire.core :as json]
+            ))
 
 (defn wrap-facebook-url-builder [client]
   "Offers some convenience by assemble a Facebook Graph API URL from a vector of keywords or strings.
@@ -30,19 +32,20 @@
           (client (assoc req :url url)))
         (client req)))))
 
-(defn wrap-json-response-conversion [client]
-  "Automatically transforms the body of a response of a Facebook Graph API request from JSON to a Clojure
-   data structure through the use of clojure.data.json. It checks if the header Content-Type
-   is 'text/javascript' which the Facebook Graph API returns in the case of a JSON response."
-  (fn [req]
-    (let [{:keys [headers] :as resp} (client req)
-          content-type (headers "content-type")]
-      (if (and content-type
-               (or
-                (.startsWith content-type "text/javascript")
-                (.startsWith content-type "application/json")))
-        (assoc resp :body (read-json (:body resp)))
-        resp))))
+;; Use Cheshire support within clj-http...
+;; (defn wrap-json-response-conversion [client]
+;;   "Automatically transforms the body of a response of a Facebook Graph API request from JSON to a Clojure
+;;    data structure through the use of clojure.data.json. It checks if the header Content-Type
+;;    is 'text/javascript' which the Facebook Graph API returns in the case of a JSON response."
+;;   (fn [req]
+;;     (let [{:keys [headers] :as resp} (client req)
+;;           content-type (headers "content-type")]
+;;       (if (and content-type
+;;                (or
+;;                 (.startsWith content-type "text/javascript")
+;;                 (.startsWith content-type "application/json")))
+;;         (assoc resp :body (read-json (:body resp)))
+;;         resp))))
 
 (defn wrap-facebook-data-extractor [client]
   "The Facebook Graph API mostly returns a JSON document in the form like this one:
@@ -98,7 +101,7 @@
          wrap-request-fn
          wrap-oauth2
          wrap-facebook-access-token
-         wrap-json-response-conversion
+         ;; wrap-json-response-conversion
          wrap-facebook-url-builder
          wrap-facebook-data-extractor
          wrap-fql
@@ -112,9 +115,9 @@
 (defn get
   "Like #'request, but sets the :method and :url as appropriate."
   [url & [req]]
-  (request (merge req {:method :get :url url})))
+  (request (merge req {:as :json :method :get :url url})))
 
 (defn post
   "Like #'request, but sets the :method and :url as appropriate."
   [url & [req]]
-  (request (merge req {:method :post :url url})))
+  (request (merge req {:as :json :method :post :url url})))
