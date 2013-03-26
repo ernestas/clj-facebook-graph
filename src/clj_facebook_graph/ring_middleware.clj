@@ -57,7 +57,7 @@
    "
   [handler facebook-app-info callback-handler]
   (fn [request]
-    (let [code (get-in request [:params "code"])
+    (let [code (get-in request [:params :code])
           callback-path (.getPath (java.net.URI. (:redirect-uri facebook-app-info)))]
       (if (and code (= callback-path (:uri request)))
         (let [params (:params ((wrap-keyword-params identity) request))
@@ -70,7 +70,7 @@
               session (dissoc session :return-to)]
           (if return-to
             (assoc (redirect return-to) :session session)
-            (callback-handler request)))
+            (callback-handler (assoc request :session session))))
         (handler request)))))
 
 (defn wrap-facebook-access-token-required
