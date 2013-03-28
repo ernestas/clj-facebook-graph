@@ -2,7 +2,7 @@
   (:use [clj-facebook-graph.helper :only [facebook-base-url facebook-fql-base-url]] 
         ;; [clojure.data.json :only [read-json]]
         )
-  (:require [clj-oauth2.client :as oauth2]
+  (:require ;; [clj-oauth2.client :as oauth2]
             [clojure.string :as str]
             [cheshire.core :as json])
   (:import [org.apache.commons.codec.binary Base64]
@@ -14,17 +14,17 @@
    :authorization-uri "https://graph.facebook.com/oauth/authorize"
    :access-token-uri "https://graph.facebook.com/oauth/access_token"})
 
-(defn get-access-token
-  "Fetches the access token using clj-oauth2/client."
-  [facebook-app-info params & [auth-req]]
-  (:access-token (oauth2/get-access-token
-                  (merge facebook-oauth2-endpoint facebook-app-info)
-                  params
-                  auth-req)))
+;; (defn get-access-token
+;;   "Fetches the access token using clj-oauth2/client."
+;;   [facebook-app-info params & [auth-req]]
+;;   (:access-token (oauth2/get-access-token
+;;                   (merge facebook-oauth2-endpoint facebook-app-info)
+;;                   params
+;;                   auth-req)))
 
 
-(defn make-auth-request [facebook-app-info]
-  (oauth2/make-auth-request (merge facebook-oauth2-endpoint facebook-app-info)))
+;; (defn make-auth-request [facebook-app-info]
+;;   (oauth2/make-auth-request (merge facebook-oauth2-endpoint facebook-app-info)))
 
 (defonce ^:dynamic *facebook-auth* nil)
 
@@ -57,8 +57,8 @@
         (client (assoc req :oauth2 (oauth2-access-token)))
         (client req)))))
 
-(defn with-facebook-access-token [uri]
-  (oauth2/with-access-token uri (oauth2-access-token)))
+;; (defn with-facebook-access-token [uri]
+;;   (oauth2/with-access-token uri (oauth2-access-token)))
 
 (defn hmac-sha-256
   "Returns a HMAC-SHA256 hash of the provided data."
