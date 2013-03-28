@@ -15,12 +15,7 @@
         ;; [clojure.data.json :only [read-json]]
         [clj-oauth2.client :only [wrap-oauth2]])
   (:require [clj-http.client :as client]
-<<<<<<< HEAD
-            ;; [cheshire.core :as json]
-            ))
-=======
             [clj-facebook-graph.auth :as auth]))
->>>>>>> 0e0f0180a977178d23b4671faafe32dcfd490a6c
 
 (defn wrap-facebook-url-builder [client]
   "Offers some convenience by assemble a Facebook Graph API URL from a vector of keywords or strings.
@@ -37,7 +32,6 @@
           (client (assoc req :url url)))
         (client req)))))
 
-<<<<<<< HEAD
 ;; Use Cheshire support within clj-http...
 ;; (defn wrap-json-response-conversion [client]
 ;;   "Automatically transforms the body of a response of a Facebook Graph API request from JSON to a Clojure
@@ -52,25 +46,9 @@
 ;;                 (.startsWith content-type "application/json")))
 ;;         (assoc resp :body (read-json (:body resp)))
 ;;         resp))))
-=======
 (defn has-facebook-auth[]
   "Returns whether there is an existing binding for facebook-auth"
   (auth/has-facebook-auth))
-
-(defn wrap-json-response-conversion [client]
-  "Automatically transforms the body of a response of a Facebook Graph API request from JSON to a Clojure
-   data structure through the use of clojure.data.json. It checks if the header Content-Type
-   is 'text/javascript' which the Facebook Graph API returns in the case of a JSON response."
-  (fn [req]
-    (let [{:keys [headers] :as resp} (client req)
-          content-type (headers "content-type")]
-      (if (and content-type
-               (or
-                (.startsWith content-type "text/javascript")
-                (.startsWith content-type "application/json")))
-        (assoc resp :body (read-json (:body resp)))
-        resp))))
->>>>>>> 0e0f0180a977178d23b4671faafe32dcfd490a6c
 
 (defn wrap-facebook-data-extractor [client]
   "The Facebook Graph API mostly returns a JSON document in the form like this one:
