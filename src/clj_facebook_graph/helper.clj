@@ -13,7 +13,8 @@
         [clj-http.client :only [unexceptional-status?]]
         [clj-facebook-graph.uri :only [make-uri]]
         [clojure.string :only [blank?]]
-        ring.middleware.params)
+        ring.middleware.params
+        [slingshot.slingshot :only [throw+ try+]])
   (:import
    (java.io PushbackReader ByteArrayInputStream InputStreamReader)))
 
@@ -46,7 +47,7 @@
       (if (or (not (clojure.core/get req :throw-exceptions true))
               (unexceptional-status? status))
         resp
-        (throw (Exception. (str "Status: " status " body: " (slurp body))))))))
+        (throw+ (str "Status: " status " body: " (slurp body)))))))
 
 (defn wrap-print-request-map [client]
   "Simply prints the request map to *out*."

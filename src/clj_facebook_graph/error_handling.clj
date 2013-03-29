@@ -9,7 +9,9 @@
 (ns clj-facebook-graph.error-handling
   ;; (:require  [cheshire.core :as json])
   ;;  (:use [clojure.data.json])
-  (:import clj_facebook_graph.FacebookGraphException))
+  ;; (:import clj_facebook_graph.FacebookGraphException)
+  (:use [slingshot.slingshot :only [throw+ try+]])
+  )
 
 (def
  ^{:doc "A map with some interesting Facebook errors that are
@@ -48,6 +50,5 @@
       (if (or (not (clojure.core/get req :throw-exceptions true))
               (not= status 400))
         resp
-        (throw
-         (FacebookGraphException. (identify-facebook-error resp)))))))
+        (throw+ (identify-facebook-error resp))))))
 

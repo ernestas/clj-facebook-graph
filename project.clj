@@ -10,10 +10,10 @@
                  [cheshire "5.0.2"]
                  [ring/ring-core "1.1.8"]
                  [clj-http "0.7.0"]
+                 [slingshot "0.10.3"]
                  ]
 
   :profiles {:dev {:dependencies [[ring/ring-devel "1.1.8"]
                                   [ring/ring-jetty-adapter "1.1.8"]
                                   [compojure "1.1.5"]]}}
-
-  :aot [clj-facebook-graph.FacebookGraphException])
+)

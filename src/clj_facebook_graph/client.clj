@@ -102,7 +102,7 @@
          wrap-exceptions
          wrap-request-fn
          ;; wrap-oauth2
-         wrap-facebook-access-token
+         ;; wrap-facebook-access-token
          ;; wrap-json-response-conversion
          wrap-facebook-url-builder
          wrap-facebook-data-extractor
