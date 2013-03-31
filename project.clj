@@ -1,6 +1,9 @@
 (defproject net.likestream/clj-facebook-graph "0.5.0-SNAPSHOT"
+
   :description "A Clojure client for the Facebook Graph API"
-  :url "http://github.com/FreeAgent/clj-facebook-graph/"
+
+  :url "http://github.com/LikeStream/clj-facebook-graph/"
+
   :license {:name "Eclipse Public License - v 1.0"
             :url "http://www.eclipse.org/legal/epl-v10.html"
             :distribution :repo
@@ -11,6 +14,7 @@
                  [ring/ring-core "1.1.8"]
                  [clj-http "0.7.0"]
                  [slingshot "0.10.3"]
+                 [bwhmather/clj-oauth2 "0.5.1"]
                  ]
 
   :profiles {:dev {:dependencies [[ring/ring-devel "1.1.8"]

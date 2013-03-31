@@ -17,13 +17,13 @@
  ^{:doc "A map with some interesting Facebook errors that are
  assigned to a keyword to identify the error easier. At the moment the
  map only include two errors which are relevant for authentication and authorisation."}
- facebook-errors {
-                  :OAuthException {"Error validating access token"
-                                   :invalid-access-token
-                                   "An access token is required to request this resource."
-                                   :access-token-required
-                                   }
-                  })
+ facebook-errors 
+ {:OAuthException {"Error validating access token"
+                   :invalid-access-token
+                   "An access token is required to request this resource."
+                   :access-token-required
+                   }
+  })
 
 (defn identify-facebook-error
   "Tries to identify the Facebook error in the response with the help
@@ -33,12 +33,14 @@
    error is returned in a form like this one:
 
    {:error [:OAuthException :invalid-access-token] :message \"Error validation access token\"}"
-  [response] (let [{:keys [type message]} (get-in response [:body :error])
-                   error-type (keyword type)]
-               {:error
-                [error-type (if-let [error (get-in facebook-errors [error-type message])]
-                              error :unknown)]
-                :message message}))
+  [response] 
+  (let [{:keys [type message]} (get-in response [:body :error])
+        error-type             (keyword type)
+        error-categorized      (if-let [error (get-in facebook-errors [error-type message])]
+                                 error 
+                                 :unknown)]
+    {:error [error-type error-categorized]
+     :message message}))
 
 (defn wrap-facebook-exceptions
   "The ring-style middleware to detect Facebook errors in the response of

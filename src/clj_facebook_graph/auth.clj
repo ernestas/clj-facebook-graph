@@ -1,9 +1,7 @@
 (ns clj-facebook-graph.auth
-  (:use [clj-facebook-graph.helper :only [facebook-base-url facebook-fql-base-url]] 
-        ;; [clojure.data.json :only [read-json]]
-        )
-  (:require ;; [clj-oauth2.client :as oauth2]
+  (:require [clj-facebook-graph.helper :refer [facebook-base-url facebook-fql-base-url]]
             [clojure.string :as str]
+            [clj-oauth2.client :as oauth2]
             [cheshire.core :as json])
   (:import [org.apache.commons.codec.binary Base64]
            [javax.crypto Mac]
@@ -14,13 +12,13 @@
    :authorization-uri "https://graph.facebook.com/oauth/authorize"
    :access-token-uri "https://graph.facebook.com/oauth/access_token"})
 
-;; (defn get-access-token
-;;   "Fetches the access token using clj-oauth2/client."
-;;   [facebook-app-info params & [auth-req]]
-;;   (:access-token (oauth2/get-access-token
-;;                   (merge facebook-oauth2-endpoint facebook-app-info)
-;;                   params
-;;                   auth-req)))
+(defn get-access-token
+   "Fetches the access token using clj-oauth2/client."
+   [facebook-app-info params & [auth-req]]
+   (:access-token (oauth2/get-access-token
+                   (merge facebook-oauth2-endpoint facebook-app-info)
+                   params
+                   auth-req)))
 
 
 ;; (defn make-auth-request [facebook-app-info]
@@ -37,11 +35,13 @@
   `(binding [*facebook-auth* ~facebook-auth]
      ~@body))
 
-(defn- oauth2-access-token []
+(defn- oauth2-access-token 
+  []
   (assoc *facebook-auth*
     :query-param (:access-query-param facebook-oauth2-endpoint) :token-type "draft-10"))
 
-(defn has-facebook-auth[]
+(defn has-facebook-auth
+  []
   "Returns whether there is an existing binding for facebook-auth"
   ((complement nil?) *facebook-auth*))
 
@@ -77,7 +77,12 @@
 (defn strtr
   "My take on PHP's strtr function."
   [value from to]
-  ((apply comp (map (fn [a b] #(.replace % a b)) from to))
+  ((apply comp 
+          (map (fn 
+                 [a b] 
+                 #(.replace % a b))
+               from
+               to))
    value))
 
 (defn decode-signed-request
@@ -86,21 +91,21 @@
   [signed-request key]
   (when (and signed-request key
              (re-matches #"^[^\.]+\.[^\.]+$" signed-request))
-    (let [[signiture payload] (str/split signed-request #"\.")
-          signiture (str (strtr signiture "-_" "+/") "=")]
-      (when (= signiture (hmac-sha-256 key payload))
+    (let [[signature payload] (str/split signed-request #"\.")
+          signature           (str (strtr signature "-_" "+/") "=")]
+      (when (= signature (hmac-sha-256 key payload))
         (json/parse-string (base64-decode payload)
                            true)))))        
 
-;;        (read-json (base64-decode payload))))))
-
-(defn extract-facebook-auth [session]
+(defn extract-facebook-auth 
+  [session]
   (:facebook-auth (val session)))
 
 (defn facebook-auth-user
   "Get the basic facebook user data for the given facebook-auth (access_token)."
   [client-get facebook-auth]
-  (with-facebook-auth facebook-auth (client-get [:me] {:extract :body})))
+  (with-facebook-auth facebook-auth 
+    (client-get [:me] {:extract :body})))
 
 (defn facebook-auth-by-name
   "Take all sessions from the session-store and extracts the facebook-auth
@@ -108,7 +113,7 @@
    associated with his current facebook-auth (access-token)."
   [client-get session-store]
   (first (map #(let [facebook-auth (extract-facebook-auth %)
-                     user-name (:name (facebook-auth-user client-get facebook-auth))]
+                     user-name     (:name (facebook-auth-user client-get facebook-auth))]
                  (identity {user-name
                             facebook-auth}))
               session-store)))

@@ -7,49 +7,40 @@
 ; You must not remove this notice, or any other, from this software.
 
 (ns clj-facebook-graph.client
-  "A client for the Facebook Graph API based on clj-http and clj-oauth2."
-  (:use [clj-facebook-graph.helper :only [wrap-exceptions facebook-base-url facebook-fql-base-url]]
-        [clj-facebook-graph.auth :only [wrap-facebook-access-token]]
-        [clj-facebook-graph.error-handling :only [wrap-facebook-exceptions]])
-  (:require [clj-http.client :as client]
-            [clj-facebook-graph.auth :as auth])
+  "A client for the Facebook Graph API using clj-http"
+  (:require [clj-http.client :as http]
+            [clj-http.core :as http-core :only [request]]
+            [clj-facebook-graph.helper :refer [wrap-exceptions facebook-base-url facebook-fql-base-url]]
+            [clj-facebook-graph.error-handling :refer [wrap-facebook-exceptions]])
   (:refer-clojure :exclude [get]))
 
-
-(defn wrap-facebook-url-builder [client]
+(defn wrap-facebook-url-builder 
   "Offers some convenience by assemble a Facebook Graph API URL from a vector of keywords or strings.
-  Instead of defining the whole Facebook Graph API URL like this (client/get \"https://graph.facebook.com/me/friends\") you can
-  simple write (client/get [:me :friends]) (you can also write [\"me\" \"friends\"]). It's flexible thanks to the homogeneity
+  Instead of defining the whole Facebook Graph API URL like this (http/get \"https://graph.facebook.com/me/friends\") you can
+  simple write (http/get [:me :friends]) (you can also write [\"me\" \"friends\"]). It's flexible thanks to the homogeneity
   of the Facebook Graph API. When you have more than an id (here \"me\") and a connection type
   (here \"friends\"), you can also provide three or more
   keywords (or strings) like in the case of 'https://graph.facebook.com/me/videos/uploaded' for example."
+  [client]
   (fn [req]
     (let [{:keys [url]} req]    
       (if (vector? url)
-        (let [url-parts-as-str (map #(if (keyword? %) (name %) (str %)) url)
-              url (apply str (interpose "/" (conj url-parts-as-str facebook-base-url)))]
+        (let [url-parts-as-str (map #(if (keyword? %) 
+                                       (name %) 
+                                       (str %))
+                                    url)
+              url              (apply str 
+                                      (interpose "/" (conj url-parts-as-str 
+                                                           facebook-base-url)))]
           (client (assoc req :url url)))
         (client req)))))
 
-;; Use Cheshire support within clj-http...
-;; (defn wrap-json-response-conversion [client]
-;;   "Automatically transforms the body of a response of a Facebook Graph API request from JSON to a Clojure
-;;    data structure through the use of clojure.data.json. It checks if the header Content-Type
-;;    is 'text/javascript' which the Facebook Graph API returns in the case of a JSON response."
-;;   (fn [req]
-;;     (let [{:keys [headers] :as resp} (client req)
-;;           content-type (headers "content-type")]
-;;       (if (and content-type
-;;                (or
-;;                 (.startsWith content-type "text/javascript")
-;;                 (.startsWith content-type "application/json")))
-;;         (assoc resp :body (read-json (:body resp)))
-;;         resp))))
-(defn has-facebook-auth[]
-  "Returns whether there is an existing binding for facebook-auth"
-  (auth/has-facebook-auth))
+;; (defn has-facebook-auth
+;;   "Returns whether there is an existing binding for facebook-auth"
+;;   []
+;;   (auth/has-facebook-auth))
 
-(defn wrap-facebook-data-extractor [client]
+(defn wrap-facebook-data-extractor 
   "The Facebook Graph API mostly returns a JSON document in the form like this one:
    {
       \"data\": [...]
@@ -63,10 +54,11 @@
   automatically triggers the pagination as you walk through the seq.
   This Ring-style middleware also supports to simply extract the body part of the request
   (':extract :body'). "
+  [client]
   (fn [req]
     (let [{:keys [extract paging]} req
-          response (client req)
-          body (:body response)]
+          response                 (client req)
+          body                     (:body response)]
       (if extract
         (if (= :body extract)
           body
@@ -80,7 +72,8 @@
               extraction)))
         response))))
 
-(defn wrap-fql [client]
+(defn wrap-fql 
+  [client]
   (fn [req]
     (let [{:keys [url fql]} req]
       (if (and (= url :fql))
@@ -101,18 +94,17 @@
          wrap-facebook-exceptions
          wrap-exceptions
          wrap-request-fn
-         ;; wrap-oauth2
-         ;; wrap-facebook-access-token
-         ;; wrap-json-response-conversion
          wrap-facebook-url-builder
          wrap-facebook-data-extractor
          wrap-fql
          ))
-  ([request] (wrap-request request client/wrap-request)))
+  ([request] 
+     (wrap-request request 
+                   http/wrap-request)))
 
 (def
   request
-  (wrap-request #'clj-http.core/request))
+  (wrap-request #'http-core/request))
 
 (defn get
   "Like #'request, but sets the :method and :url as appropriate."
@@ -122,4 +114,5 @@
 (defn post
   "Like #'request, but sets the :method and :url as appropriate."
   [url & [req]]
-  (request (merge req {:as :json :method :post :url url})))
+  (request (merge req 
+                  {:as :json :method :post :url url})))

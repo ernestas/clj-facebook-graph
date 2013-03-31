@@ -9,14 +9,14 @@
 (ns clj-facebook-graph.helper
   "Some helper functions."
   (:use ;; [clojure.data.json :only [read-json read-json-from Read-JSON-From]]
-        [clojure.java.io :only [reader]]
+        ;; [clojure.java.io :only [reader]]
         [clj-http.client :only [unexceptional-status?]]
         [clj-facebook-graph.uri :only [make-uri]]
         [clojure.string :only [blank?]]
         ring.middleware.params
-        [slingshot.slingshot :only [throw+ try+]])
-  (:import
-   (java.io PushbackReader ByteArrayInputStream InputStreamReader)))
+        [slingshot.slingshot :only [throw+ try+]]))
+  ;; (:import
+  ;;  (java.io PushbackReader ByteArrayInputStream InputStreamReader)))
 
 (def facebook-base-url "https://graph.facebook.com")
 
@@ -29,8 +29,9 @@
 ;;                                       (ByteArrayInputStream. input)))
 ;;                     keywordize? eof-error? eof-value)))
 
-(defn build-url [request]
+(defn build-url 
   "Builds a URL string which corresponds to the information of the request."
+  [request]
   (let [{:keys [server-port server-name uri query-params scheme]} request]
     (str (make-uri {:scheme (name scheme)
                     :host server-name
@@ -38,19 +39,22 @@
                     :path uri
                     :query query-params}))))
 
-(defn wrap-exceptions [client]
+(defn wrap-exceptions 
   "An alternative Ring-style middleware to the #'clj-http.core/wrap-exceptions. This
    one also extracts the body from the http response, which is very helpful to see
    the error description Facebook has returned as JSON document."
+  [client]
   (fn [req]
     (let [{:keys [status body] :as resp} (client req)]
-      (if (or (not (clojure.core/get req :throw-exceptions true))
+      (if (or (not (clojure.core/get req 
+                                     :throw-exceptions 
+                                     true))
               (unexceptional-status? status))
         resp
         (throw+ (str "Status: " status " body: " (slurp body)))))))
 
-(defn wrap-print-request-map [client]
-  "Simply prints the request map to *out*."
-  (fn [req]
-    (println req)
-    (client req)))
+;; (defn wrap-print-request-map [client]
+;;   "Simply prints the request map to *out*."
+;;   (fn [req]
+;;     (println req)
+;;     (client req)))
