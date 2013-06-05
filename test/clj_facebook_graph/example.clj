@@ -55,12 +55,12 @@
             (client request)))
         (client request)))))
 
-(def request (wrap-facebook-id-by-name #'clj-facebook-graph.client/request))
+(def request-ex (wrap-facebook-id-by-name #'clj-facebook-graph.client/request))
 
 (defn fb-get
   "Like #'request, but sets the :method and :url as appropriate."
   [url & [req]]
-  (request (merge req {:method :get :url url})))
+  (request-ex (merge req {:method :get :url url})))
 
 (defn get-album-overview [id]
   (map (fn [{:keys [id name]}]
@@ -77,7 +77,7 @@
 (defonce facebook-app-info {:client-id "your Facebook app id"
                             :client-secret "your Facebook app's secret"
                             :redirect-uri "http://localhost:8080/facebook-callback"
-                            :scope  ["user_photos" "friends_photos" "publish_stream"]})
+                            :scope ["user_photos" "friends_photos" "publish_stream"]})
 
 (defroutes app
   (GET "/albums/:id" [id]
@@ -110,7 +110,6 @@
 ;(def server (start-server))
 ;(.stop (.get server))
 
-
 (def example-wall-post
      {:message "Check out this funny article"
       :link "http://www.example.com/article.html"
@@ -122,7 +121,7 @@
       :privacy "{\"value\": \"ALL_FRIENDS\"}"
       :targeting "{\"countries\":\"US\",\"regions\":\"6,53\",\"locales\":\"6\"}"})
 
-(defmacro with-facebook-auth-by-name [name & body]
+(defmacro with-facebook-auth-by-name-ex [name & body]
   (list* 'clj-facebook-graph.auth/with-facebook-auth-by-name
          'clj-facebook-graph.client/get
          @session-store name body))
