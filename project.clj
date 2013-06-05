@@ -1,4 +1,4 @@
-(defproject net.likestream/clj-facebook-graph "0.5.0-SNAPSHOT"
+(defproject net.likestream/clj-facebook-graph "0.5.0"
 
   :description "A Clojure client for the Facebook Graph API"
 
@@ -12,7 +12,7 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [cheshire "5.0.2"]
                  [ring/ring-core "1.1.8"]
-                 [clj-http "0.7.0"]
+                 [clj-http "0.7.2"]
                  [slingshot "0.10.3"]
                  [bwhmather/clj-oauth2 "0.5.1"]
                  ]

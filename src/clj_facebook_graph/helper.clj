@@ -29,15 +29,16 @@
 ;;                                       (ByteArrayInputStream. input)))
 ;;                     keywordize? eof-error? eof-value)))
 
-(defn build-url 
-  "Builds a URL string which corresponds to the information of the request."
-  [request]
-  (let [{:keys [server-port server-name uri query-params scheme]} request]
-    (str (make-uri {:scheme (name scheme)
-                    :host server-name
-                    :port server-port
-                    :path uri
-                    :query query-params}))))
+;; TODO: delete?  apparently not used...
+;; (defn build-url 
+;;   "Builds a URL string which corresponds to the information of the request."
+;;   [request]
+;;   (let [{:keys [server-port server-name uri query-params scheme]} request]
+;;     (str (make-uri {:scheme (name scheme)
+;;                     :host server-name
+;;                     :port server-port
+;;                     :path uri
+;;                     :query query-params}))))
 
 (defn wrap-exceptions 
   "An alternative Ring-style middleware to the #'clj-http.core/wrap-exceptions. This

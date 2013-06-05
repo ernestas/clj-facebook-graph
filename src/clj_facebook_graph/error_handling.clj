@@ -16,16 +16,16 @@
 (def
  ^{:doc "A map with some interesting Facebook errors that are
  assigned to a keyword to identify the error easier. At the moment the
- map only include two errors which are relevant for authentication and authorisation."}
+ map only include two errors which are relevant for authentication and authorisation."
+   :private true}
  facebook-errors 
  {:OAuthException {"Error validating access token"
                    :invalid-access-token
                    "An access token is required to request this resource."
                    :access-token-required
-                   }
-  })
+                   }})
 
-(defn identify-facebook-error
+(defn- identify-facebook-error
   "Tries to identify the Facebook error in the response with the help
    of the #'facebook-errors map (the json response must already be converted
    into a Clojure data structure at this point). If the error is not included
@@ -39,7 +39,8 @@
         error-categorized      (if-let [error (get-in facebook-errors [error-type message])]
                                  error 
                                  :unknown)]
-    {:error [error-type error-categorized]
+    {:type :facebook-graph
+     :error [error-type error-categorized]
      :message message}))
 
 (defn wrap-facebook-exceptions

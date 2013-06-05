@@ -5,7 +5,7 @@
 
 (declare url-encode)
 
-(defn form-url-encode 
+(defn- form-url-encode 
   [arg]
   (str/join \& (map (fn [[k v]]
                       (if (vector? v)
@@ -16,7 +16,7 @@
                     arg)))
 
 ;; taken from https://github.com/marktriggs/clojure-http-client/blob/master/src/clojure/http/client.clj
-(defn url-encode
+(defn- url-encode
   "Wrapper around java.net.URLEncoder returning an UTF-8 URL encoded
    representation of argument, either a string or map."
   [arg]
@@ -56,7 +56,7 @@
 ;;          (assoc uri :query (form-url-decode (:query uri)))
 ;;          uri))))
 
-(defn format* 
+(defn- format* 
   [str a b]
   (if b (format str a b) a))
 

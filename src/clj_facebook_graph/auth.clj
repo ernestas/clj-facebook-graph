@@ -21,8 +21,9 @@
                    auth-req)))
 
 
-;; (defn make-auth-request [facebook-app-info]
-;;   (oauth2/make-auth-request (merge facebook-oauth2-endpoint facebook-app-info)))
+(defn make-auth-request ;; Needed only for test?
+  [facebook-app-info]
+  (oauth2/make-auth-request (merge facebook-oauth2-endpoint facebook-app-info)))
 
 (defonce ^:dynamic *facebook-auth* nil)
 
@@ -57,8 +58,9 @@
         (client (assoc req :oauth2 (oauth2-access-token)))
         (client req)))))
 
-;; (defn with-facebook-access-token [uri]
-;;   (oauth2/with-access-token uri (oauth2-access-token)))
+(defn with-facebook-access-token ;; Only needed for tests?
+  [uri]
+  (oauth2/with-access-token uri (oauth2-access-token)))
 
 (defn hmac-sha-256
   "Returns a HMAC-SHA256 hash of the provided data."
