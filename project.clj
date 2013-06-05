@@ -10,7 +10,8 @@
             :comments "same as Clojure"}
 
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [cheshire "5.0.2"]
+                 ;; [cheshire "5.0.2"]
+                 [cheshire "5.1.1"]
                  [ring/ring-core "1.1.8"]
                  [clj-http "0.7.2"]
                  [slingshot "0.10.3"]
