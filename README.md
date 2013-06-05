@@ -1,8 +1,29 @@
+# LikeStream fork of clj-facebook-graph
+
+Significant changes to the original code below.
+
+Overall, the scope of the library has been reduced.
+
+To include a Facebook Oauth token with your request, include the clj-http key :oauth-token and provide the token as the (string) value.
+
+JSON encoding/decoding is done via the Cheshire library, mostly internal to clj-http itself.
+
+The special clj-facebook-graph execeptions have been replaced with [Slingshot](https://github.com/scgilardi/slingshot) stones.
+
+I use a forked version of [clj-oauth2](https://github.com/likestream/clj-oauth2/tree/develop)
+
+There are further changes and cleanup still to be done:
+
+- [] Remove obsolete/commented-out code
+- [] Fix/create tests
+- [] Fix the documention
+
+
 # clj-facebook-graph
 
 clj-facebook-graph is a simple Clojure client for the Facebook Graph
-API based on [clj-http](https://github.com/getwoven/clj-http) and
-[Ring](https://github.com/mmcgrana/ring). It offers some convenience
+API based on [clj-http](https://github.com/dakrone/clj-http) and
+[Ring](https://github.com/ring-clojure/ring). It offers some convenience
 when you are working with the Facebook Graph API. Furthermore
 clj-facebook-graph provides a simple authentication flow in the form
 of some Ring middleware.
