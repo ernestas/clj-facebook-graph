@@ -52,7 +52,9 @@
                                      true))
               (unexceptional-status? status))
         resp
-        (throw+ (str "Status: " status " body: " (slurp body)))))))
+        (throw+  {:type :facebook-graph
+                  :error [:status status]
+                  :message (slurp body)})))))
 
 ;; (defn wrap-print-request-map [client]
 ;;   "Simply prints the request map to *out*."

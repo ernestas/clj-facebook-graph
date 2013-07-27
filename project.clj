@@ -11,14 +11,14 @@
 
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [cheshire "5.1.1"]
-                 [ring/ring-core "1.2.0-beta3"]
-                 [clj-http "0.7.2"]
+                 [ring/ring-core "1.2.0"]
+                 [clj-http "0.7.6"]
                  [slingshot "0.10.3"]
                  [net.likestream/clj-oauth2 "0.5.3"]
                  ]
 
-  :profiles {:dev {:dependencies [[ring/ring-devel "1.2.0-beta3"]
-                                  [ring/ring-jetty-adapter "1.2.0-beta3"]
+  :profiles {:dev {:dependencies [[ring/ring-devel "1.2.0"]
+                                  [ring/ring-jetty-adapter "1.2.0"]
                                   [compojure "1.1.5"]]}}
 )
 
